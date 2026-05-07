@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>美团安全知识挑战 × HPW 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0d0d0d;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 20px;
+      max-width: 420px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(255, 103, 0, 0.15);
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #ff6700 0%, #ff3c00 100%);
+      padding: 28px 24px 22px;
+      text-align: center;
+      position: relative;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .header p {
+      color: rgba(255,255,255,0.8);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* Progress */
+    .progress-bar {
+      height: 3px;
+      background: #222;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6700, #ff3c00);
+      transition: width 0.4s ease;
+    }
+
+    /* Body */
+    .body {
+      padding: 28px 24px;
+    }
+
+    /* Step indicator */
+    .step-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #333;
+      transition: background 0.3s;
+    }
+    .step-dot.active { background: #ff6700; }
+    .step-dot.done { background: #ff6700; opacity: 0.4; }
+    .step-label {
+      color: #555;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    /* Question */
+    .question-num {
+      color: #ff6700;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .question-text {
+      color: #eee;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    /* Options */
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      background: #1a1a1a;
+      border: 1.5px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #ccc;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .option:hover { border-color: #ff6700; color: #fff; background: #1f1a15; }
+    .option.correct {
+      border-color: #22c55e;
+      background: #0f2a1a;
+      color: #4ade80;
+    }
+    .option.wrong {
+      border-color: #ef4444;
+      background: #2a0f0f;
+      color: #f87171;
+    }
+    .option.disabled { pointer-events: none; opacity: 0.5; }
+    .option.correct.disabled, .option.wrong.disabled { opacity: 1; }
+    .option-letter {
+      width: 26px; height: 26px;
+      border-radius: 6px;
+      background: #333;
+      color: #999;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .option.correct .option-letter { background: #22c55e; color: #fff; }
+    .option.wrong .option-letter { background: #ef4444; color: #fff; }
+    .option:hover:not(.correct):not(.wrong) .option-letter { background: #ff6700; color: #fff; }
+
+    /* Feedback */
+    .feedback {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.ok { background: #0f2a1a; color: #4ade80; border: 1px solid #22c55e33; }
+    .feedback.err { background: #2a0f0f; color: #f87171; border: 1px solid #ef444433; }
+
+    /* Next btn */
+    .btn-next {
+      margin-top: 22px;
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #ff6700, #ff3c00);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: none;
+      transition: opacity 0.2s;
+    }
+    .btn-next:hover { opacity: 0.9; }
+    .btn-next.show { display: block; }
+
+    /* Result */
+    .result {
+      text-align: center;
+      padding: 10px 0;
+    }
+    .result-emoji {
+      font-size: 56px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .result-title {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .result-sub {
+      color: #888;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .result-score {
+      display: inline-block;
+      background: linear-gradient(135deg, #ff6700, #ff3c00);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 8px 22px;
+      border-radius: 30px;
+      margin-bottom: 24px;
+    }
+    .coupon-box {
+      background: linear-gradient(135deg, #1a1000, #1f1500);
+      border: 1.5px dashed #ff6700;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .coupon-title {
+      color: #ff6700;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .coupon-main {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .coupon-hint {
+      color: #888;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .result-stamp {
+      color: #444;
+      font-size: 11px;
+      margin-top: 16px;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 14px 24px;
+      border-top: 1px solid #1c1c1c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .footer-logo {
+      width: 18px; height: 18px;
+      background: #ff6700;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer-logo svg { width: 12px; height: 12px; }
+    .footer span {
+      color: #444;
+      font-size: 12px;
+    }
+    .footer strong { color: #666; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="header-badge">× HPW 2026 · MGM Macau</div>
+    <h1>美团安全知识挑战</h1>
+    <p>3题全答对，凭结果页到展台领礼品 🎁</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div class="body">
+    <!-- Step dots -->
+    <div class="step-row">
+      <div class="step-dot active" id="dot0"></div>
+      <div class="step-dot" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <span class="step-label" id="stepLabel">第 1 题 / 共 3 题</span>
+    </div>
+
+    <!-- Quiz area -->
+    <div id="quizArea"></div>
+
+    <!-- Result area -->
+    <div id="resultArea" style="display:none"></div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-logo">
+      <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+    </div>
+    <span><strong>美团安全应急响应中心</strong> · Meituan SRC</span>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    num: "Q1",
+    text: "以下哪种攻击方式专门针对大语言模型（LLM），通过构造恶意输入让模型「忘记」系统指令？",
+    options: ["SQL 注入", "Prompt 注入", "XSS 跨站脚本", "CSRF 跨站请求伪造"],
+    answer: 1,
+    ok: "✅ 正确！Prompt Injection（提示词注入）是AI时代最典型的新型攻击面，本届大会也有专题演讲深入探讨这一方向。",
+    err: "❌ 答案是 Prompt 注入。通过精心构造的输入绕过大模型的系统提示，是AI安全领域当前最热的研究课题之一。"
+  },
+  {
+    num: "Q2",
+    text: "白帽黑客在授权范围内发现漏洞后，正确的处理方式是？",
+    options: ["立即公开发布漏洞细节以引起重视", "私下出售漏洞信息获利", "通过厂商SRC提交漏洞，等待官方修复", "直接利用漏洞做演示验证"],
+    answer: 2,
+    ok: "✅ 正确！通过SRC负责任披露（Responsible Disclosure）是白帽黑客的基本准则，也是推动互联网安全生态健康发展的关键。",
+    err: "❌ 答案是通过SRC提交漏洞。负责任的漏洞披露保护了用户，也保护了研究员自己——这是白帽与黑帽最核心的区别。"
+  },
+  {
+    num: "Q3",
+    text: "美团SRC（安全应急响应中心）主要负责什么？",
+    options: ["处理用户外卖订单投诉", "收集并响应外部安全研究员提交的漏洞报告", "开发美团 App 新功能", "管理美团骑手调度系统"],
+    answer: 1,
+    ok: "✅ 完全正确！美团SRC负责与外部安全研究员协作，收集漏洞、推动修复、给予奖励，欢迎来展台聊聊合作方向 👋",
+    err: "❌ 正确答案是收集并响应外部安全研究员提交的漏洞报告。如果你发现了美团相关的安全问题，欢迎通过 SRC 提交！"
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function updateProgress() {
+  const pct = (current / questions.length) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  for (let i = 0; i < 3; i++) {
+    const d = document.getElementById('dot' + i);
+    d.className = 'step-dot' + (i < current ? ' done' : (i === current ? ' active' : ''));
+  }
+  document.getElementById('stepLabel').textContent = `第 ${current + 1} 题 / 共 ${questions.length} 题`;
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = questions[current];
+  const letters = ['A','B','C','D'];
+  let html = `
+    <div class="question-num">${q.num} · 安全知识</div>
+    <div class="question-text">${q.text}</div>
+    <div class="options" id="optionsBox">
+  `;
+  q.options.forEach((opt, i) => {
+    html += `
+      <div class="option" id="opt${i}" onclick="choose(${i})">
+        <span class="option-letter">${letters[i]}</span>
+        ${opt}
+      </div>
+    `;
+  });
+  html += `</div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next" id="btnNext" onclick="next()">
+      ${current < questions.length - 1 ? '下一题 →' : '查看结果 🎉'}
+    </button>
+  `;
+  document.getElementById('quizArea').innerHTML = html;
+  updateProgress();
+}
+
+function choose(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const fb = document.getElementById('feedback');
+  const opts = document.querySelectorAll('.option');
+
+  opts.forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === q.answer) o.classList.add('correct');
+    else if (i === idx && idx !== q.answer) o.classList.add('wrong');
+  });
+
+  if (idx === q.answer) {
+    score++;
+    fb.className = 'feedback ok show';
+    fb.textContent = q.ok;
+  } else {
+    fb.className = 'feedback err show';
+    fb.textContent = q.err;
+  }
+
+  document.getElementById('btnNext').classList.add('show');
+}
+
+function next() {
+  current++;
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('stepLabel').parentElement.style.display = 'none';
+
+  const perfect = score === 3;
+  const now = new Date();
+  const ts = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+  const resultArea = document.getElementById('resultArea');
+  resultArea.style.display = 'block';
+  resultArea.innerHTML = `
+    <div class="result">
+      <span class="result-emoji">${perfect ? '🏆' : score >= 2 ? '🎯' : '💡'}</span>
+      <div class="result-title">${perfect ? '全部答对！' : score >= 2 ? '答对了 ' + score + ' 题！' : '继续加油！'}</div>
+      <div class="result-sub">
+        ${perfect
+          ? '太厉害了！安全知识满分通过，<br>凭此页面到美团展台领取礼品 👇'
+          : score >= 2
+          ? '不错！凭此页面到美团展台领取礼品 👇'
+          : '本次未全部答对，欢迎来展台聊聊<br>美团SRC的漏洞奖励计划 👋'}
+      </div>
+      ${score >= 2 ? `
+      <div class="coupon-box">
+        <div class="coupon-title">🎁 展台兑换凭证</div>
+        <div class="coupon-main">美团定制礼品 × 1</div>
+        <div class="coupon-hint">请将此页面截图或直接出示给<br>美团展台工作人员，每人限领一次</div>
+      </div>
+      ` : `
+      <div class="coupon-box" style="border-color:#333">
+        <div class="coupon-title" style="color:#666">欢迎来展台交流</div>
+        <div class="coupon-main" style="color:#999; font-size:15px">美团SRC · 漏洞奖励计划</div>
+        <div class="coupon-hint">发现美团安全问题？欢迎提交，<br>我们期待与你合作 🤝</div>
+      </div>
+      `}
+      <div class="result-stamp">答题时间：${ts} · HPW 2026 · MGM Macau</div>
+    </div>
+  `;
+}
+
+// Init
+renderQuestion();
+</script>
+
+</body>
+</html>
