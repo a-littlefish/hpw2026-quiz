@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>美团安全知识挑战 × HPW 2026</title>
+  <title>Meituan SRC Quiz × HPW 2026</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -21,7 +21,7 @@
       background: #111;
       border: 1px solid #222;
       border-radius: 20px;
-      max-width: 420px;
+      max-width: 440px;
       width: 100%;
       overflow: hidden;
       box-shadow: 0 0 60px rgba(255, 103, 0, 0.15);
@@ -30,9 +30,14 @@
     /* Header */
     .header {
       background: linear-gradient(135deg, #ff6700 0%, #ff3c00 100%);
-      padding: 28px 24px 22px;
-      text-align: center;
+      padding: 24px 24px 20px;
       position: relative;
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
     }
     .header-badge {
       display: inline-block;
@@ -40,29 +45,73 @@
       color: #fff;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      padding: 4px 12px;
+      letter-spacing: 1px;
+      padding: 4px 10px;
       border-radius: 20px;
-      margin-bottom: 10px;
+    }
+    /* Language switcher */
+    .lang-switch {
+      display: flex;
+      background: rgba(0,0,0,0.2);
+      border-radius: 20px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .lang-btn {
+      padding: 4px 12px;
+      border-radius: 16px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: #fff;
+      color: #ff6700;
     }
     .header h1 {
       color: #fff;
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 700;
       line-height: 1.3;
+      margin-bottom: 5px;
     }
     .header p {
       color: rgba(255,255,255,0.8);
       font-size: 13px;
-      margin-top: 6px;
+    }
+    /* Logo area */
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .logo-box {
+      background: rgba(255,255,255,0.95);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #ff6700;
+      letter-spacing: 0.5px;
+    }
+    .logo-divider {
+      color: rgba(255,255,255,0.4);
+      font-size: 16px;
+    }
+    .logo-event {
+      color: rgba(255,255,255,0.9);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     /* Progress */
-    .progress-bar {
-      height: 3px;
-      background: #222;
-    }
+    .progress-bar { height: 3px; background: #1a1a1a; }
     .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #ff6700, #ff3c00);
@@ -70,25 +119,24 @@
     }
 
     /* Body */
-    .body {
-      padding: 28px 24px;
-    }
+    .body { padding: 24px 22px; }
 
-    /* Step indicator */
+    /* Step row */
     .step-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
     .step-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #333;
+      width: 28px; height: 6px;
+      border-radius: 3px;
+      background: #2a2a2a;
       transition: background 0.3s;
     }
     .step-dot.active { background: #ff6700; }
-    .step-dot.done { background: #ff6700; opacity: 0.4; }
+    .step-dot.done { background: #ff670066; }
     .step-label {
       color: #555;
       font-size: 12px;
@@ -96,86 +144,93 @@
     }
 
     /* Question */
+    .question-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
     .question-num {
       color: #ff6700;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       letter-spacing: 1px;
-      margin-bottom: 10px;
+      background: #1f1000;
+      border: 1px solid #ff670044;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .question-tag {
+      color: #555;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
     .question-text {
       color: #eee;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
-      line-height: 1.5;
-      margin-bottom: 22px;
+      line-height: 1.55;
+      margin-bottom: 20px;
     }
 
     /* Options */
-    .options { display: flex; flex-direction: column; gap: 10px; }
+    .options { display: flex; flex-direction: column; gap: 9px; }
     .option {
       background: #1a1a1a;
       border: 1.5px solid #2a2a2a;
       border-radius: 12px;
-      padding: 14px 16px;
-      color: #ccc;
-      font-size: 15px;
+      padding: 13px 14px;
+      color: #bbb;
+      font-size: 14px;
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
       -webkit-tap-highlight-color: transparent;
+      line-height: 1.45;
     }
     .option:hover { border-color: #ff6700; color: #fff; background: #1f1a15; }
-    .option.correct {
-      border-color: #22c55e;
-      background: #0f2a1a;
-      color: #4ade80;
-    }
-    .option.wrong {
-      border-color: #ef4444;
-      background: #2a0f0f;
-      color: #f87171;
-    }
+    .option.correct { border-color: #22c55e; background: #0f2a1a; color: #4ade80; }
+    .option.wrong   { border-color: #ef4444; background: #2a0f0f; color: #f87171; }
     .option.disabled { pointer-events: none; opacity: 0.5; }
     .option.correct.disabled, .option.wrong.disabled { opacity: 1; }
     .option-letter {
-      width: 26px; height: 26px;
+      width: 26px; height: 26px; min-width: 26px;
       border-radius: 6px;
-      background: #333;
-      color: #999;
+      background: #2a2a2a;
+      color: #888;
       font-size: 12px;
       font-weight: 700;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
       transition: all 0.2s;
     }
     .option.correct .option-letter { background: #22c55e; color: #fff; }
-    .option.wrong .option-letter { background: #ef4444; color: #fff; }
+    .option.wrong   .option-letter { background: #ef4444; color: #fff; }
     .option:hover:not(.correct):not(.wrong) .option-letter { background: #ff6700; color: #fff; }
 
     /* Feedback */
     .feedback {
-      margin-top: 16px;
+      margin-top: 14px;
       padding: 12px 14px;
       border-radius: 10px;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.55;
       display: none;
     }
     .feedback.show { display: block; }
-    .feedback.ok { background: #0f2a1a; color: #4ade80; border: 1px solid #22c55e33; }
+    .feedback.ok  { background: #0f2a1a; color: #4ade80; border: 1px solid #22c55e33; }
     .feedback.err { background: #2a0f0f; color: #f87171; border: 1px solid #ef444433; }
 
     /* Next btn */
     .btn-next {
-      margin-top: 22px;
+      margin-top: 20px;
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       background: linear-gradient(135deg, #ff6700, #ff3c00);
       color: #fff;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       border: none;
       border-radius: 12px;
@@ -186,72 +241,56 @@
     .btn-next:hover { opacity: 0.9; }
     .btn-next.show { display: block; }
 
+    /* Section divider */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0 20px;
+    }
+    .section-divider-line { flex: 1; height: 1px; background: #222; }
+    .section-divider-text {
+      color: #444;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
     /* Result */
-    .result {
-      text-align: center;
-      padding: 10px 0;
+    .result { text-align: center; padding: 8px 0; }
+    .result-emoji { font-size: 52px; margin-bottom: 10px; display: block; }
+    .result-title { color: #fff; font-size: 21px; font-weight: 700; margin-bottom: 8px; }
+    .result-sub { color: #888; font-size: 13px; line-height: 1.6; margin-bottom: 20px; }
+    .result-score-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    .result-emoji {
-      font-size: 56px;
-      margin-bottom: 12px;
-      display: block;
-    }
-    .result-title {
-      color: #fff;
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .result-sub {
-      color: #888;
-      font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 24px;
-    }
-    .result-score {
-      display: inline-block;
-      background: linear-gradient(135deg, #ff6700, #ff3c00);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      padding: 8px 22px;
+    .score-pill {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
       border-radius: 30px;
-      margin-bottom: 24px;
+      padding: 6px 16px;
+      font-size: 13px;
+      color: #777;
     }
+    .score-pill span { color: #ff6700; font-weight: 700; }
     .coupon-box {
       background: linear-gradient(135deg, #1a1000, #1f1500);
       border: 1.5px dashed #ff6700;
       border-radius: 14px;
       padding: 20px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
-    .coupon-title {
-      color: #ff6700;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-    .coupon-main {
-      color: #fff;
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .coupon-hint {
-      color: #888;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-    .result-stamp {
-      color: #444;
-      font-size: 11px;
-      margin-top: 16px;
-    }
+    .coupon-title { color: #ff6700; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; }
+    .coupon-main  { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .coupon-hint  { color: #888; font-size: 12px; line-height: 1.55; }
+    .result-stamp { color: #333; font-size: 11px; margin-top: 14px; }
 
     /* Footer */
     .footer {
-      padding: 14px 24px;
+      padding: 14px 22px;
       border-top: 1px solid #1c1c1c;
       display: flex;
       align-items: center;
@@ -259,129 +298,256 @@
       gap: 8px;
     }
     .footer-logo {
-      width: 18px; height: 18px;
       background: #ff6700;
-      border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
+      border-radius: 5px;
+      padding: 3px 7px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.3px;
     }
-    .footer-logo svg { width: 12px; height: 12px; }
-    .footer span {
-      color: #444;
-      font-size: 12px;
-    }
-    .footer strong { color: #666; }
+    .footer span { color: #444; font-size: 12px; }
+    .footer strong { color: #555; }
   </style>
 </head>
 <body>
-
 <div class="card">
+
+  <!-- Header -->
   <div class="header">
-    <div class="header-badge">× HPW 2026 · MGM Macau</div>
-    <h1>美团安全知识挑战</h1>
-    <p>3题全答对，凭结果页到展台领礼品 🎁</p>
+    <div class="header-top">
+      <div>
+        <div class="header-logo">
+          <div class="logo-box">Meituan SRC</div>
+          <span class="logo-divider">×</span>
+          <span class="logo-event">HPW 2026</span>
+        </div>
+        <h1 id="hTitle">安全知识挑战 / Security Quiz</h1>
+        <p id="hSub">答对 5 题以上，凭结果页到展台领礼品 🎁</p>
+      </div>
+      <div class="lang-switch">
+        <button class="lang-btn active" id="btnZH" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
   </div>
 
   <div class="progress-bar">
     <div class="progress-fill" id="progressFill" style="width:0%"></div>
   </div>
 
+  <!-- Body -->
   <div class="body">
-    <!-- Step dots -->
-    <div class="step-row">
-      <div class="step-dot active" id="dot0"></div>
-      <div class="step-dot" id="dot1"></div>
-      <div class="step-dot" id="dot2"></div>
-      <span class="step-label" id="stepLabel">第 1 题 / 共 3 题</span>
-    </div>
-
-    <!-- Quiz area -->
+    <div class="step-row" id="stepRow"></div>
     <div id="quizArea"></div>
-
-    <!-- Result area -->
     <div id="resultArea" style="display:none"></div>
   </div>
 
+  <!-- Footer -->
   <div class="footer">
-    <div class="footer-logo">
-      <svg viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-    </div>
-    <span><strong>美团安全应急响应中心</strong> · Meituan SRC</span>
+    <div class="footer-logo">美团 SRC</div>
+    <span><strong>Meituan Security Response Center</strong> · MGM Macau</span>
   </div>
 </div>
 
 <script>
-const questions = [
-  {
-    num: "Q1",
-    text: "以下哪种攻击方式专门针对大语言模型（LLM），通过构造恶意输入让模型「忘记」系统指令？",
-    options: ["SQL 注入", "Prompt 注入", "XSS 跨站脚本", "CSRF 跨站请求伪造"],
-    answer: 1,
-    ok: "✅ 正确！Prompt Injection（提示词注入）是AI时代最典型的新型攻击面，本届大会也有专题演讲深入探讨这一方向。",
-    err: "❌ 答案是 Prompt 注入。通过精心构造的输入绕过大模型的系统提示，是AI安全领域当前最热的研究课题之一。"
-  },
-  {
-    num: "Q2",
-    text: "白帽黑客在授权范围内发现漏洞后，正确的处理方式是？",
-    options: ["立即公开发布漏洞细节以引起重视", "私下出售漏洞信息获利", "通过厂商SRC提交漏洞，等待官方修复", "直接利用漏洞做演示验证"],
-    answer: 2,
-    ok: "✅ 正确！通过SRC负责任披露（Responsible Disclosure）是白帽黑客的基本准则，也是推动互联网安全生态健康发展的关键。",
-    err: "❌ 答案是通过SRC提交漏洞。负责任的漏洞披露保护了用户，也保护了研究员自己——这是白帽与黑帽最核心的区别。"
-  },
-  {
-    num: "Q3",
-    text: "美团SRC（安全应急响应中心）主要负责什么？",
-    options: ["处理用户外卖订单投诉", "收集并响应外部安全研究员提交的漏洞报告", "开发美团 App 新功能", "管理美团骑手调度系统"],
-    answer: 1,
-    ok: "✅ 完全正确！美团SRC负责与外部安全研究员协作，收集漏洞、推动修复、给予奖励，欢迎来展台聊聊合作方向 👋",
-    err: "❌ 正确答案是收集并响应外部安全研究员提交的漏洞报告。如果你发现了美团相关的安全问题，欢迎通过 SRC 提交！"
-  }
-];
+// ── Data ──────────────────────────────────────────────────────────────────────
+const DATA = {
+  zh: [
+    {
+      tag: "AI 安全",
+      text: "以下哪种攻击专门针对大语言模型（LLM），通过构造恶意输入让模型「忘记」系统指令？",
+      options: ["SQL 注入", "Prompt 注入", "XSS 跨站脚本", "缓冲区溢出"],
+      answer: 1,
+      ok:  "✅ 正确！Prompt Injection（提示词注入）是 AI 时代最典型的新型攻击面，本届大会多位演讲者深入探讨了这一方向。",
+      err: "❌ 答案是 Prompt 注入。通过精心构造的输入绕过大模型系统提示，是当前 AI 安全领域最热的研究课题之一。"
+    },
+    {
+      tag: "漏洞披露",
+      text: "白帽黑客在授权范围内发现漏洞后，正确的处理方式是？",
+      options: ["立即公开发布漏洞细节", "私下出售漏洞信息", "通过厂商 SRC 提交并等待修复", "直接利用漏洞做演示"],
+      answer: 2,
+      ok:  "✅ 正确！通过 SRC 负责任披露（Responsible Disclosure）是白帽黑客的基本准则，也是保护用户的正确方式。",
+      err: "❌ 正确答案是通过 SRC 提交漏洞。负责任披露保护了用户，也保护了研究员自己——这是白帽与黑帽最核心的区别。"
+    },
+    {
+      tag: "美团 SRC",
+      text: "美团 SRC（安全应急响应中心）的主要职责是？",
+      options: ["处理用户外卖投诉", "收集并响应外部安全研究员提交的漏洞报告", "开发美团 App 新功能", "管理骑手调度系统"],
+      answer: 1,
+      ok:  "✅ 完全正确！美团 SRC 负责与外部安全研究员协作，收集漏洞、推动修复、给予奖励。欢迎来展台聊聊合作 👋",
+      err: "❌ 正确答案是收集并响应外部安全研究员提交的漏洞报告。如果你发现了美团相关的安全问题，欢迎提交！"
+    }
+  ],
+  en: [
+    {
+      tag: "Web Security",
+      text: "An attacker injects malicious scripts into a web page viewed by other users. What type of attack is this?",
+      options: ["SQL Injection", "CSRF", "Cross-Site Scripting (XSS)", "Directory Traversal"],
+      answer: 2,
+      ok:  "✅ Correct! XSS (Cross-Site Scripting) allows attackers to inject client-side scripts into pages viewed by others, enabling session hijacking, defacement, or malware distribution.",
+      err: "❌ The answer is XSS (Cross-Site Scripting). It injects malicious scripts that run in other users' browsers — one of the most prevalent web vulnerabilities."
+    },
+    {
+      tag: "AI Security",
+      text: "Which technique involves manipulating an AI agent by hiding malicious instructions inside content the agent is asked to process?",
+      options: ["Model Inversion", "Indirect Prompt Injection", "Adversarial Patch", "Data Poisoning"],
+      answer: 1,
+      ok:  "✅ Correct! Indirect Prompt Injection embeds instructions in external content (emails, websites, docs) that an agent reads, silently hijacking its behavior. A hot topic at HPW 2026!",
+      err: "❌ The answer is Indirect Prompt Injection — hiding attack commands inside content an AI agent processes, causing it to take unintended actions without the user's knowledge."
+    },
+    {
+      tag: "Bug Bounty",
+      text: "What is the standard responsible disclosure process when a researcher finds a vulnerability in a company's product?",
+      options: [
+        "Publish full details immediately to maximize pressure",
+        "Sell the vulnerability on a marketplace",
+        "Report privately to the vendor and allow time to patch before public disclosure",
+        "Exploit it to prove severity, then report"
+      ],
+      answer: 2,
+      ok:  "✅ Correct! Responsible disclosure means reporting privately first, giving the vendor reasonable time to fix, then disclosing publicly. This protects users while rewarding researchers.",
+      err: "❌ The correct answer is to report privately and allow time to patch. This is the ethical foundation of bug bounty programs and white-hat hacking."
+    }
+  ]
+};
 
+const UI = {
+  zh: {
+    headerSub:  "答对 5 题以上，凭结果页到展台领礼品 🎁",
+    qLabel:     (i, t) => `第 ${i} 题 · ${t}`,
+    stepLabel:  (i, n) => `${i} / ${n} 题`,
+    nextBtn:    (last) => last ? "查看结果 🎉" : "下一题 →",
+    sectionMid: "— 英文题目 · English Questions —",
+    resultTitle:(s,n) => s >= 5 ? "全部通关！" : s >= 4 ? `答对 ${s} 题！` : `本次得分 ${s} 题`,
+    resultSub:  (s) => s >= 5 ? "太厉害了！满分通关，凭此页面到美团展台领取礼品 👇" : s >= 4 ? "不错！凭此页面到展台领取礼品 👇" : "欢迎来展台聊聊 Meituan SRC 漏洞奖励计划 👋",
+    scoreZH: "中文", scoreEN: "英文",
+    couponTitle:"🎁 展台兑换凭证",
+    couponMain: "美团定制礼品 × 1",
+    couponHint: "请将此页面截图或直接出示给美团展台工作人员\n每人限领一次",
+    noPassTitle:"欢迎来展台交流",
+    noPassMain: "Meituan SRC · 漏洞奖励计划",
+    noPassHint: "发现美团安全问题？欢迎提交，我们期待与你合作 🤝",
+    stamp:      (ts) => `答题时间：${ts} · HPW 2026 · MGM Macau`
+  },
+  en: {
+    headerSub:  "Answer 5+ correctly to claim your gift at the Meituan booth 🎁",
+    qLabel:     (i, t) => `Q${i} · ${t}`,
+    stepLabel:  (i, n) => `${i} of ${n}`,
+    nextBtn:    (last) => last ? "See Results 🎉" : "Next →",
+    sectionMid: "— 中文题目 · Chinese Questions —",
+    resultTitle:(s,n) => s >= 5 ? "Perfect Score!" : s >= 4 ? `${s} Correct!` : `Score: ${s}`,
+    resultSub:  (s) => s >= 5 ? "Outstanding! Show this screen at the Meituan booth to claim your gift 👇" : s >= 4 ? "Nice! Show this screen at our booth to claim your gift 👇" : "Come chat with us about the Meituan SRC bug bounty program 👋",
+    scoreZH: "Chinese", scoreEN: "English",
+    couponTitle:"🎁 Booth Redemption Pass",
+    couponMain: "Meituan Exclusive Gift × 1",
+    couponHint: "Show or screenshot this page at the Meituan booth\nOne per person",
+    noPassTitle:"Come Say Hi",
+    noPassMain: "Meituan SRC · Bug Bounty Program",
+    noPassHint: "Found a vulnerability in Meituan's products? We'd love to hear from you 🤝",
+    stamp:      (ts) => `Completed: ${ts} · HPW 2026 · MGM Macau`
+  }
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let lang = 'zh';
+let questions = [];  // combined: zh[0..2] + en[3..5]
 let current = 0;
-let score = 0;
+let scores = { zh: 0, en: 0 };
 let answered = false;
+let started = false;
 
-function updateProgress() {
-  const pct = (current / questions.length) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
-  for (let i = 0; i < 3; i++) {
-    const d = document.getElementById('dot' + i);
-    d.className = 'step-dot' + (i < current ? ' done' : (i === current ? ' active' : ''));
-  }
-  document.getElementById('stepLabel').textContent = `第 ${current + 1} 题 / 共 ${questions.length} 题`;
+function buildQuestions() {
+  // always zh first, en second
+  questions = [...DATA.zh, ...DATA.en];
 }
 
+// ── Lang switch ───────────────────────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.getElementById('btnZH').classList.toggle('active', l === 'zh');
+  document.getElementById('btnEN').classList.toggle('active', l === 'en');
+  document.getElementById('hSub').textContent = UI[lang].headerSub;
+  if (!started) {
+    renderQuestion();
+  } else {
+    // just re-render current state labels; don't re-render mid-question
+  }
+}
+
+// ── Progress / dots ───────────────────────────────────────────────────────────
+function updateProgress() {
+  const total = questions.length;
+  document.getElementById('progressFill').style.width = (current / total * 100) + '%';
+
+  const row = document.getElementById('stepRow');
+  row.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i < current ? ' done' : i === current ? ' active' : '');
+    // section gap
+    if (i === 3) {
+      const gap = document.createElement('div');
+      gap.style.cssText = 'width:6px';
+      row.appendChild(gap);
+    }
+    row.appendChild(d);
+  }
+  const lbl = document.createElement('span');
+  lbl.className = 'step-label';
+  lbl.id = 'stepLabel';
+  lbl.textContent = UI[lang].stepLabel(current + 1, total);
+  row.appendChild(lbl);
+}
+
+// ── Render question ───────────────────────────────────────────────────────────
 function renderQuestion() {
+  started = true;
   answered = false;
+
+  // Section divider between zh and en blocks
+  const showDivider = current === 3;
   const q = questions[current];
+  const qLang = current < 3 ? 'zh' : 'en';
+  const ui = UI[qLang];
   const letters = ['A','B','C','D'];
-  let html = `
-    <div class="question-num">${q.num} · 安全知识</div>
-    <div class="question-text">${q.text}</div>
-    <div class="options" id="optionsBox">
-  `;
+
+  let html = '';
+  if (showDivider) {
+    html += `<div class="section-divider">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">EN · ENGLISH ROUND</div>
+      <div class="section-divider-line"></div>
+    </div>`;
+  }
+
+  html += `<div class="question-meta">
+    <span class="question-num">${ui.qLabel(current < 3 ? current + 1 : current - 2, q.tag)}</span>
+  </div>
+  <div class="question-text">${q.text}</div>
+  <div class="options" id="optionsBox">`;
+
   q.options.forEach((opt, i) => {
-    html += `
-      <div class="option" id="opt${i}" onclick="choose(${i})">
-        <span class="option-letter">${letters[i]}</span>
-        ${opt}
-      </div>
-    `;
+    html += `<div class="option" id="opt${i}" onclick="choose(${i})">
+      <span class="option-letter">${letters[i]}</span>${opt}
+    </div>`;
   });
+
   html += `</div>
-    <div class="feedback" id="feedback"></div>
-    <button class="btn-next" id="btnNext" onclick="next()">
-      ${current < questions.length - 1 ? '下一题 →' : '查看结果 🎉'}
-    </button>
-  `;
+  <div class="feedback" id="feedback"></div>
+  <button class="btn-next" id="btnNext" onclick="next()">${ui.nextBtn(current === questions.length - 1)}</button>`;
+
   document.getElementById('quizArea').innerHTML = html;
   updateProgress();
 }
 
+// ── Choose ────────────────────────────────────────────────────────────────────
 function choose(idx) {
   if (answered) return;
   answered = true;
+
   const q = questions[current];
+  const qLang = current < 3 ? 'zh' : 'en';
   const fb = document.getElementById('feedback');
   const opts = document.querySelectorAll('.option');
 
@@ -391,18 +557,15 @@ function choose(idx) {
     else if (i === idx && idx !== q.answer) o.classList.add('wrong');
   });
 
-  if (idx === q.answer) {
-    score++;
-    fb.className = 'feedback ok show';
-    fb.textContent = q.ok;
-  } else {
-    fb.className = 'feedback err show';
-    fb.textContent = q.err;
-  }
+  const correct = idx === q.answer;
+  if (correct) scores[qLang]++;
 
+  fb.className = 'feedback ' + (correct ? 'ok' : 'err') + ' show';
+  fb.textContent = correct ? q.ok : q.err;
   document.getElementById('btnNext').classList.add('show');
 }
 
+// ── Next ──────────────────────────────────────────────────────────────────────
 function next() {
   current++;
   if (current >= questions.length) {
@@ -412,49 +575,50 @@ function next() {
   }
 }
 
+// ── Result ────────────────────────────────────────────────────────────────────
 function showResult() {
   document.getElementById('progressFill').style.width = '100%';
   document.getElementById('quizArea').style.display = 'none';
-  document.getElementById('stepLabel').parentElement.style.display = 'none';
+  document.getElementById('stepRow').style.display = 'none';
 
-  const perfect = score === 3;
+  const ui = UI[lang];
+  const total = scores.zh + scores.en;
+  const pass = total >= 5;
+
   const now = new Date();
   const ts = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-  const resultArea = document.getElementById('resultArea');
-  resultArea.style.display = 'block';
-  resultArea.innerHTML = `
+  const r = document.getElementById('resultArea');
+  r.style.display = 'block';
+  r.innerHTML = `
     <div class="result">
-      <span class="result-emoji">${perfect ? '🏆' : score >= 2 ? '🎯' : '💡'}</span>
-      <div class="result-title">${perfect ? '全部答对！' : score >= 2 ? '答对了 ' + score + ' 题！' : '继续加油！'}</div>
-      <div class="result-sub">
-        ${perfect
-          ? '太厉害了！安全知识满分通过，<br>凭此页面到美团展台领取礼品 👇'
-          : score >= 2
-          ? '不错！凭此页面到美团展台领取礼品 👇'
-          : '本次未全部答对，欢迎来展台聊聊<br>美团SRC的漏洞奖励计划 👋'}
+      <span class="result-emoji">${total === 6 ? '🏆' : total >= 5 ? '🎯' : total >= 3 ? '💡' : '📚'}</span>
+      <div class="result-title">${ui.resultTitle(total, 6)}</div>
+      <div class="result-sub">${ui.resultSub(total)}</div>
+      <div class="result-score-row">
+        <div class="score-pill">${ui.scoreZH} <span>${scores.zh}/3</span></div>
+        <div class="score-pill">${ui.scoreEN} <span>${scores.en}/3</span></div>
+        <div class="score-pill">Total <span>${total}/6</span></div>
       </div>
-      ${score >= 2 ? `
+      ${pass ? `
       <div class="coupon-box">
-        <div class="coupon-title">🎁 展台兑换凭证</div>
-        <div class="coupon-main">美团定制礼品 × 1</div>
-        <div class="coupon-hint">请将此页面截图或直接出示给<br>美团展台工作人员，每人限领一次</div>
-      </div>
-      ` : `
-      <div class="coupon-box" style="border-color:#333">
-        <div class="coupon-title" style="color:#666">欢迎来展台交流</div>
-        <div class="coupon-main" style="color:#999; font-size:15px">美团SRC · 漏洞奖励计划</div>
-        <div class="coupon-hint">发现美团安全问题？欢迎提交，<br>我们期待与你合作 🤝</div>
-      </div>
-      `}
-      <div class="result-stamp">答题时间：${ts} · HPW 2026 · MGM Macau</div>
-    </div>
-  `;
+        <div class="coupon-title">${ui.couponTitle}</div>
+        <div class="coupon-main">${ui.couponMain}</div>
+        <div class="coupon-hint">${ui.couponHint}</div>
+      </div>` : `
+      <div class="coupon-box" style="border-color:#2a2a2a">
+        <div class="coupon-title" style="color:#555">${ui.noPassTitle}</div>
+        <div class="coupon-main" style="color:#888;font-size:15px">${ui.noPassMain}</div>
+        <div class="coupon-hint">${ui.noPassHint}</div>
+      </div>`}
+      <div class="result-stamp">${ui.stamp(ts)}</div>
+    </div>`;
 }
 
-// Init
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildQuestions();
+document.getElementById('hSub').textContent = UI[lang].headerSub;
 renderQuestion();
 </script>
-
 </body>
 </html>
